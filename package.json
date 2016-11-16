@@ -1,0 +1,29 @@
+{
+  "name": "seniorassassin-frontend",
+  "description": "Frontend server component for the WHS Senior Assassin project",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreweggleston/GoSeniorAssassinFrontend.git"
+  },
+  "version": "0.1.0",
+  "scripts": {
+    "start": "webpack-dev-server --host 0.0.0.0",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build-dev": "webpack",
+    "clean": "rimraf dist",
+    "lint": "eslint --cache src test",
+    "lint-fix": "eslint --cache --fix src test",
+    "test": "karma start",
+    "test-browsers": "cross-env TEST_ENV=BROWSERS karma start"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "bugs": {
+    "url": "https://github.com/andreweggleston/GoSeniorAssassinFrontend/issues"
+  },
+  "homepage": "https://github.com/andreweggleston/GoSeniorAssassinFrontend#readme",
+  "author": "Andrew Eggleston"
+}

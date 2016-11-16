@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html ng-app="seniorassassin">
+<head>
+
+    <title type = "tab">Assassin '17</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="./css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+
+<body>
+<nav class = "nav navbar navbar-default navbar-static-top navbar-inverse" role = "navigation">
+
+    <div class = "navbar-header">
+        <button type = "button" class = "navbar-toggle" data-toggle = "collapse" data-target = "#navbar-collapse-toggle">
+            <span class = "sr-only">Toggle navigation</span>
+            <span class = "icon-bar"></span>
+            <span class = "icon-bar"></span>
+            <span class = "icon-bar"></span>
+        </button>
+        <a class = "nav navbar-brand" href = "index.html">
+            <img src="navbar_logo.png" alt="Senior Assassin">
+        </a>
+    </div>
+
+    <div class = "collapse navbar-collapse" id = "navbar-collapse-toggle">
+        <ul class = "nav navbar-nav">
+            <li type = "tab"><a href = "action.html"><span class="glyphicon glyphicon-screenshot"></span> Action</a></li>
+            <li type = "tab"><a href = "map.html"><span class="glyphicon glyphicon-globe"></span> Map</a></li>
+            <li type = "tab"><a href = "stats.html"><span class="glyphicon glyphicon-stats"></span> Stats</a></li>
+            <li type = "tab"><a href = "rules.html"><span class="glyphicon glyphicon-book"></span> Rules</a></li>
+        </ul>
+    </div>
+
+</nav>
+
+<div class = "container">
+
+    <div class="row">
+
+
+        <div class = "col-md-5 col-md-offset-1 content-box">
+            <h2 class = "safety-header">Current Safety Item:</h2>
+
+            <h3>{{$root.currentSafetyObject}}</h3>
+
+        </div>
+
+        <div class = "col-md-5  content-box">
+            <h3>You have until </h3>
+
+            <h2 class = "time-content">2am on Oct. 28</h2>
+
+            <h3>to kill your next target.</h3>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="content-box col-md-10 col-md-offset-1">
+            <h2 class ="announcements-header">Announcements:</h2>
+
+            <h3>Get your permission slips in.</h3>
+
+        </div>
+    </div>
+</div>
+
+<!--<script src="https://code.jquery.com/jquery-2.2.1.min.js"-->
+<!--integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="-->
+<!--crossorigin="anonymous">-->
+<!--</script>-->
+<!---->
+<!--<script src="/client.js"></script>-->
+
+
+</body>
+</html>
