@@ -1,70 +1,79 @@
+/* @flow */
 angular.module('seniorassassin')
-  .provider('Settings', Settings)
-  .config(SettingsConfigBlock);
-
-
-/** @ngInject */
-function SettingsConfigBlock(SettingsProvider, VocalNotifications) {
-  SettingsProvider.constants.themesList = {
-    light:    {name: 'Light', selector: 'default-theme'},
-    dark:     {name: 'Dark', selector: 'dark-theme'},
-  };
-
-  SettingsProvider.constants.animationOptions = {
-    slow:     {name: 'Slow',      selector: 'animation-slow'},
-    normal:   {name: 'Normal',    selector: 'animation-normal'},
-    fast:     {name: 'Fast',      selector: 'animation-fast'},
-    none:     {name: 'None',      selector: 'animation-none'},
-  };
-
-  SettingsProvider.constants.timestampOptions = {
-    hours12:  {name: '12-hour'},
-    hours24:  {name: '24-hour'},
-    none:     {name: 'None'},
-  };
-
-  function setDefaultValues() {
-    SettingsProvider.settings.currentTheme = 'default-theme';
-    SettingsProvider.settings.timestamps = 'hours12';
-    SettingsProvider.settings.animationLength = 'animation-normal';
-  }
-
-  setDefaultValues();
-}
+  .provider('Settings', Settings);
 
 function Settings() {
   var settingsProvider = {};
 
   settingsProvider.settings = {};
 
-  settingsProvider.constants = {};
+  settingsProvider.constants = {
+
+    themesList: {
+      light:    {name: 'Assassin', selector: 'default-theme'},
+      dark:     {name: 'Assassin Dark', selector: 'dark-theme'},
+    },
+
+    videoBackground: {
+      on:    {name: 'On',     value: 'on'},
+      off:   {name: 'Off',    value: 'off'},
+    },
+
+    animationOptions: {
+      slow:     {name: 'Slow',      selector: 'animation-slow'},
+      normal:   {name: 'Normal',    selector: 'animation-normal'},
+      fast:     {name: 'Fast',      selector: 'animation-fast'},
+      none:     {name: 'None',      selector: 'animation-none'},
+    },
+
+    timestampOptions: {
+      hours12:  {name: '12-hour'},
+      hours24:  {name: '24-hour'},
+      none:     {name: 'None'},
+    },
+  };
+
+  function setDefaultValues() {
+    settingsProvider.settings.currentTheme = 'default-theme';
+    settingsProvider.settings.timestamps = 'hours12';
+    settingsProvider.settings.animationLength = 'animation-normal';
+    settingsProvider.settings.recentConfigurations = '[]';
+    settingsProvider.settings.savedConfigurations = '[]';
+    settingsProvider.settings.videoBackground = 'off';
+  }
+
+  setDefaultValues();
 
   /*
    Creates the service with all the functions accessible
    during and after the run phase.
    */
   /** @ngInject */
-  var settingsService = function (Websocket, $rootScope, $log, $q) {
+  var settingsService = function (Websocket, $rootScope, $log: AngularJSLog, $q) {
 
-    //Private properties
+    // Private properties
     var settings = settingsProvider.settings;
     var alreadyLoadedFromBackend = false;
 
-    for (var settingKey in localStorage) {
-      settings[settingKey] = localStorage.getItem(settingKey);
+    for (const [key, val] of Object.entries(localStorage)) {
+      if (key === 'filtersEnabled') {
+        settings[key] = (val === 'true');
+      } else {
+        settings[key] = val;
+      }
     }
 
     $rootScope.$emit('settings-updated');
 
     Websocket.onJSON('playerSettings', function (data) {
-      for (var setting in data) {
+      for (var setting of Object.keys(data)) {
         var value = data[setting];
         // coerce true/false for conveniece
         if (value === 'true' || value === 'false') {
           value = (value === 'true');
         }
 
-        localStorage.setItem(setting, value);
+        localStorage.setItem(setting, value.toString());
         settings[setting] = value;
       }
 
@@ -96,25 +105,29 @@ function Settings() {
 
       localStorage.setItem(key, newValue);
 
-      Websocket.emitJSON('playerSettingsSet',
-                         //Backend only accepts strings!
-                         {key: key.toString(), value: newValue.toString()},
-                         function (response) {
-                           if (response.success) {
-                             $log.log('Setting "' + key + '" saved correctly on the backend!');
-                             deferred.resolve(response);
-                           } else {
-                             if (revertOnFail) {
-                               settings[key] = oldValue;
-                               $rootScope.$emit('settings-updated');
-                             }
+      if ($rootScope.userProfile.studentid) {
+        Websocket.emitJSON('playerSettingsSet',
+                           // Backend only accepts strings!
+                           {key: key.toString(), value: newValue.toString()},
+                           function (response) {
+                             if (response.success) {
+                               $log.log('Setting "' + key + '" saved correctly on the backend!');
+                               deferred.resolve(response);
+                             } else {
+                               if (revertOnFail) {
+                                 settings[key] = oldValue;
+                                 $rootScope.$emit('settings-updated');
+                               }
 
-                             $log.log('Error setting key ' + key + ' with value ' +
-                                      newValue + '. Reason: ' + response.message);
-                             deferred.reject(response);
-                           }
-                           callback(response);
-                         });
+                               $log.log('Error setting key ' + key + ' with value ' +
+                                        newValue + '. Reason: ' + response.message);
+                               deferred.reject(response);
+                             }
+                             callback(response);
+                           });
+      } else {
+        deferred.resolve();
+      }
 
       return deferred.promise;
     };

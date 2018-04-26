@@ -1,15 +1,22 @@
+import {property} from 'lodash/fp';
+
+/* @flow */
 angular.module('seniorassassin.filters')
   .filter('capitalize', capitalize_AngularWrapper)
   .filter('numberOrDash', numberOrDash)
   .filter('reverse', reverse_AngularWrapper)
   .filter('trusted', trusted)
+  .filter('stripSlotNameNumber', stripSlotNameNumber_AngularWrapper)
+  .filter('slotNameToClassName', slotNameToClassName_AngularWrapper)
   .filter('ifNumeric', ifNumeric)
   .filter('secondsToMinutes', secondsToMinutes_AngularWrapper)
   .filter('unique', unique)
-  .filter('greaterThan', greaterThan);
+  .filter('notIn', notIn)
+  .filter('greaterThan', greaterThan)
+  .filter('passwordDisplay', passwordDisplay_AngularWrapper);
 
-export function capitalize(input) {
-  if (angular.isUndefined(input) || input === '') {
+export function capitalize(input: ?string) {
+  if (angular.isUndefined(input) || !input || input === '') {
     return input;
   }
   return input.charAt(0).toUpperCase() + input.substr(1).toLowerCase();
@@ -32,11 +39,11 @@ function numberOrDash($filter) {
     if (angular.isUndefined(input) || isNaN(input)) {
       return input;
     }
-    return (+input) === 0? dash : numberFilter(input);
+    return (+input) === 0 ? dash : numberFilter(input);
   };
 }
 
-export function reverse(items) {
+export function reverse(items: Array<any>) {
   return items.slice().reverse();
 }
 
@@ -52,6 +59,35 @@ function trusted($sce) {
   };
 }
 
+export function stripSlotNameNumber(slotName: string) {
+  return angular.isString(slotName) ? slotName.replace(/\d+$/, '') : slotName;
+}
+
+/** @ngInject */
+function stripSlotNameNumber_AngularWrapper() {
+  return stripSlotNameNumber;
+}
+
+var classSynonyms = {
+  roamer: 'soldier',
+  pocket: 'soldier',
+};
+
+export function slotNameToClassName(slotName: string) {
+  slotName = stripSlotNameNumber(slotName);
+
+  var className = slotName;
+  if (classSynonyms.hasOwnProperty(slotName)) {
+    className = classSynonyms[slotName];
+  }
+
+  return className;
+}
+
+/** @ngInject */
+function slotNameToClassName_AngularWrapper() {
+  return slotNameToClassName;
+}
 
 /** @ngInject */
 function ifNumeric() {
@@ -66,10 +102,10 @@ function ifNumeric() {
   };
 }
 
-export function secondsToMinutes(seconds) {
+export function secondsToMinutes(seconds: number) {
   var minutes = Math.floor(seconds / 60);
   seconds = seconds % 60;
-  seconds = seconds < 10 ? '0' + seconds : seconds;
+  var secondsStr = (seconds < 10 ? '0' : '') + seconds;
   return minutes + ':' + seconds;
 }
 
@@ -80,20 +116,31 @@ function secondsToMinutes_AngularWrapper() {
 
 /** @ngInject */
 function unique() {
-  return function (array, uniqueKey) {
-    var uniqueArray = [];
-    for (var key in array) {
-      var existsInArray = false;
-      for (var j in uniqueArray) {
-        if (uniqueArray[j][uniqueKey] === array[key][uniqueKey]) {
-          existsInArray = true;
-        }
-      }
-      if (!existsInArray) {
-        uniqueArray.push(array[key]);
-      }
+  return function (array: ?Array<Object>, uniqueKey: string) {
+    if (!array) {
+      return [];
     }
-    return uniqueArray;
+
+    return array.reduce(([out, seen], o) => {
+      let v = o[uniqueKey];
+      if (!seen.has(v)) {
+        seen.add(v);
+        out.push(o);
+      }
+      return [out, seen];
+    }, [[], new Set()])[0];
+  };
+}
+
+/** @ngInject */
+function notIn() {
+  return function (array: Array<Object>, key: String, excludeList: Array<Object>) {
+    if (!array) {
+      return [];
+    }
+
+    const excludeSet = new Set(excludeList.map(property(key)));
+    return array.filter(({[key]: s}) => !excludeSet.has(s));
   };
 }
 
@@ -104,4 +151,13 @@ function greaterThan() {
       return item[prop] > val;
     });
   };
+}
+
+export function passwordDisplay(password: string) {
+  return password.replace(/./g, '•');
+}
+
+/** @ngInject */
+function passwordDisplay_AngularWrapper() {
+  return passwordDisplay;
 }

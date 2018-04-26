@@ -1,8 +1,9 @@
-# WHS Senior Assassin Frontend
+# seniorassassin Frontend
 
+seniorassassin Frontend is the frontend server component for the
+[seniorassassin](https://seniorassassin.com) project.
 
-
-SeniorAssassin uses [AngularJS](https://angularjs.org/) as its framework,
+It uses [AngularJS](https://angularjs.org/) as its framework,
 [NPM](https://www.npmjs.com/) for package management,
 [webpack](https://webpack.github.io/) for builds, and
 [Karma](https://karma-runner.github.io/) for testing.
@@ -35,26 +36,17 @@ SeniorAssassin uses [AngularJS](https://angularjs.org/) as its framework,
 Have `git`, `node`, and `npm` installed, and then follow these steps:
 
     # Download this repository via git
-    git clone https://github.com/drewwww/owfrontend.git
-    # or download a zip from: https://github.com/drewwww/owfrontend/archive/master.zip
+    git clone https://github.com/seniorassassin/Frontend.git
+    # or download a zip from: https://github.com/seniorassassin/Frontend/archive/master.zip
     # Move to the fetched directory
-    cd owfrontend
+    cd Frontend
     # Install dependencies
     npm install
 
 VERY IMPORTANT: copy the `app.config.template.json` to
 `app.config.json` and replace the placeholders with your desired
 values. All the `<<ENDPOINT>>` templates MUST be filled in. The
-WebSocket and API endpoints are required. 
-
-    ...
-    "endpoints": {
-        "websocket": "ws://seniorassassin.net:8081/websocket/",
-        "api": "seniorassassin.net:8081"
-      },
-    ...
-
-Set `sentryDSN` to a blank
+WebSocket and API endpoints are required. Set `sentryDSN` to a blank
 string if you do not want to use
 [Senty](https://github.com/getsentry/sentry).
 
@@ -80,7 +72,7 @@ string if you do not want to use
 ## License
 
 Source code released under the
-[GPLv3 License (GPLv3)](https://github.com/drewwww/owfrontend/blob/master/LICENSE).
+[GPLv3 License (GPLv3)](https://github.com/seniorassassin/Frontend/blob/master/LICENSE).
 
 The assets have a variety of licenses, see `src/assets/README.md` for
 their licensing information.

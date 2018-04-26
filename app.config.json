@@ -1,7 +1,7 @@
 {
   "endpoints": {
-    "websocket": "seniorassassin.ddns.net:8081/websocket/",
-    "api": "seniorassassin.ddns.net:8081"
+    "websocket": "ws://10.0.0.5.nip.io:8081/websocket/",
+    "api": "http://10.0.0.5.nip.io:8081"
   },
   "sentryDSN": "",
   "debug": true

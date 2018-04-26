@@ -1,4 +1,4 @@
-/*global __dirname, module, process */
+/* global __dirname, module, process */
 
 // Support building with older node.js versions:
 require('array.prototype.find');
@@ -64,6 +64,7 @@ var configFile = [
 var babelSettings = {
   presets: ['es2015'],
   plugins: [
+    'transform-flow-strip-types',
     // Include the Babel runtime functions once for all source
     // files
     'transform-runtime',
@@ -82,15 +83,17 @@ var extractVendorStyles = new ExtractTextPlugin('vendor.css');
 var isDev = process.env.NODE_ENV !== 'production';
 var ext = (isDev ? '' : '.min') + '.js';
 
-console.log('Using config file:', configFile);
-console.log('Build type:', isDev? 'development':'production');
+if (process.env.BUILD_QUIET !== 'true') {
+  console.log('Using config file:', configFile);
+  console.log('Build type:', isDev ? 'development' : 'production');
+}
 
 module.exports = {
   context: SRC,
 
   babelSettings: babelSettings,
 
-  devtool: (isDev? 'inline-' : '') + 'source-map',
+  devtool: (isDev ? 'inline-' : '') + 'source-map',
 
   quiet: false,
   noInfo: false,
@@ -105,10 +108,9 @@ module.exports = {
   },
 
   entry: {
-    app: './app/app',
+    app: ['babel-polyfill', './app/app'],
     admin: './admin/app',
     vendor: [
-	  'webpack-dev-server/client?http://0.0.0.0:8080',
       'angular', // see angular-min alias and comment in lib/angular-min.js
       'angular-animate',
       'angular-ui-router',
@@ -119,6 +121,10 @@ module.exports = {
       'angular-bindonce',
       'angular-ui-validate',
       '../node_modules/ng-media-events/src/ng-media-events.js',
+      'react',
+      'lodash',
+      'babel-polyfill',
+      'xss-filters',
       'clipboard',
       'kefir',
       'moment',
@@ -127,7 +133,7 @@ module.exports = {
     ],
   },
 
-  noParse: isDev? [] : [
+  noParse: isDev ? [] : [
     /node_modules\/angular/,
     /node_modules\/angular-material/,
     /node_modules\/angular-material-data-table/,
@@ -169,14 +175,14 @@ module.exports = {
       toPath('/node_modules/angular-bindonce/bindonce' + ext),
 
       kefir: toPath('/node_modules/kefir/dist/kefir' + ext),
-      moment: toPath('/node_modules/moment/' + (isDev? '' : 'min/')
+      moment: toPath('/node_modules/moment/' + (isDev ? '' : 'min/')
                      + 'moment' + ext),
     },
   },
 
   output: {
     path: OUT,
-    filename: '[name].js',
+    filename: '[name]-[hash].js',
   },
 
   module: {
@@ -193,12 +199,12 @@ module.exports = {
     }, {
       test: /\.svg$/,
       loaders: [
-        'file?name=[path][name].[ext]',
+        'file?name=[hash].[ext]',
         'svgo?' + JSON.stringify(svgoSettings),
       ],
     }, {
-      test: /\.(png|jpg|jpeg|gif|woff|woff2|ttf|eot|otf|webm|mp4|ogg|wav|ico)$/,
-      loader: 'file?name=[path][name].[ext]',
+      test: /\.(png|jpg|jpeg|gif|woff|woff2|ttf|eot|otf|webm|mp4|ogg|wav)$/,
+      loader: 'file?name=[hash].[ext]',
     }, {
       test: /\.html$/,
       include: [
@@ -252,6 +258,18 @@ module.exports = {
       }),
     }),
     new HtmlWebpackPlugin({
+      template: 'maintenance.html',
+      filename: 'maintenance.html',
+      hash: true,
+      minify: {
+        collapseWhitespace: true,
+        minifyCSS: true,
+        minifyJS: true,
+      },
+      inject: false,
+      excludeChunks: ['vendor', 'app'],
+    }),
+    new HtmlWebpackPlugin({
       template: 'index.html',
       hash: true,
       minify: {
@@ -276,14 +294,14 @@ module.exports = {
     new CopyWebpackPlugin([{
       from: 'assets/',
       to: 'assets/',
-      ignore: ['*.svg', '*.png'],
+      ignore: ['*.svg', '*.png', '*.webm', '*.mp4', '*.ogg', '*.wav'],
     }]),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     // Ignore meaningless moment build warnings:
     new webpack.IgnorePlugin(/locale/, /moment/),
   ].concat(
-    isDev? [] : [
+    isDev ? [] : [
       new UglifyJsPlugin({
         compress: {
           // I'm not a fan of hiding warnings, but UglifyJS's are often
@@ -301,6 +319,8 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     contentBase: toPath('dist/'),
+    port: parseInt(_.get(process.env, 'DEV_PORT', '8080'), 10),
+    stats: 'minimal',
   },
 
   markdownLoader: {

@@ -1,5 +1,12 @@
-.idea/GoSeniorAssassinFrontend.iml
-.idea/modules.xml
-.idea/workspace.xml
+node_modules/
+bower_components/
+.sass-cache/
+.idea/
+.tmp/
 dist/
-src/index-old.html
+app.config.json
+app.config.js
+src/app/app.config.js
+Frontend.iml
+coverage/
+.eslintcache
