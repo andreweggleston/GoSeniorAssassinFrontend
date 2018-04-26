@@ -1,0 +1,369 @@
+@import "../_variables.scss";
+
+/*======================================
+                MIXINS
+ =======================================*/
+/*
+  The mixin takes several parameters and combines them into a single animation property.
+  $names: list of the names of the animations to be combined (no comma).
+  $duration: duration of all the animations.
+    In this case, the mixin is to be used inside the @each loop for animations,
+    so it defaults to $animation-duration.
+  $delay: defaults to 0s -null so it doesn't appear in the property.
+  $stagger: meant for staggering children of the same parent.
+*/
+$animation-duration: 2;
+$set-delay: 0;
+@mixin animation($names, $duration: $animation-duration, $delay: null, $stagger: null) {
+  $animation:; //declare variable
+
+  // Doing it this way so $delay can be null and not show up in the property
+  @if $delay {
+    $set-delay: $delay;
+  } @else {
+    $set-delay: 0s;
+  }
+
+  @if $stagger {
+    @for $i from 0 through 10 {
+      &:nth-child(#{$i + 1}) {
+        animation-delay: $set-delay + $stagger * $i;
+      }
+    }
+    // Add a general animation-delay to every children equal to $stagger * 10.
+    // This way, children from 1-10 will stagger, but if the children is deeper,
+    // it will appear at the same time as the 10th.
+    $delay: $set-delay + $stagger * 10;
+  }
+
+  @each $name in $names {
+    $animation: $animation + $duration $name $delay cubic-bezier(0.215, 0.61, 0.355, 1) both + ", ";
+  }
+
+  //Remove trailing comma and space
+  $animation: str-slice(#{$animation}, 1, str-length(#{$animation}) - 2);
+  //If no animation, use animation: none (gets rid of delays).
+  animation: if($duration == 0s, none, $animation);
+}
+
+
+/*======================================
+          KEYFRAMES DECLARATIONS
+ =======================================*/
+
+//SLIDE-IN
+
+@keyframes slide-from-top {
+  0%    {transform: translateY(-$padding-medium)}
+  100%  {transform: translateY(0)}
+}
+
+@keyframes slide-from-right {
+  0%    {transform: translateX($padding-medium)}
+  100%  {transform: translateX(0)}
+}
+
+@keyframes slide-from-bottom {
+  0%    {transform: translateY($padding-medium)}
+  100%  {transform: translateY(0)}
+}
+
+@keyframes slide-from-left {
+  0%    {transform: translateX(-$padding-medium)}
+  100%  {transform: translateX(0)}
+}
+
+
+//SLIDE-OUT
+
+@keyframes slide-to-top {
+  0%    {transform: translateY(0)}
+  100%  {transform: translateY(-$padding-medium)}
+}
+
+@keyframes slide-to-right {
+  0%    {transform: translateX(0)}
+  100%  {transform: translateX($padding-medium)}
+}
+
+@keyframes slide-to-bottom {
+  0%    {transform: translateY(0)}
+  100%  {transform: translateY($padding-medium)}
+}
+
+@keyframes slide-to-left {
+  0%    {transform: translateX(0)}
+  100%  {transform: translateX(-$padding-medium)}
+}
+
+
+//SLIDE-IN FULL
+
+@keyframes slide-from-top-full {
+  0%    {transform: translateY(-100%)}
+  100%  {transform: translateY(0)}
+}
+
+@keyframes slide-from-right-full {
+  0%    {transform: translateX(100%)}
+  100%  {transform: translateX(0)}
+}
+
+@keyframes slide-from-bottom-full {
+  0%    {transform: translateY(100%)}
+  100%  {transform: translateY(0)}
+}
+
+@keyframes slide-from-left-full {
+  0%    {transform: translateX(-100%)}
+  100%  {transform: translateX(0)}
+}
+
+
+//SLIDE-OUT
+
+@keyframes slide-to-top-full {
+  0%    {transform: translateY(0)}
+  100%  {transform: translateY(-100%)}
+}
+
+@keyframes slide-to-right-full {
+  0%    {transform: translateX(0)}
+  100%  {transform: translateX(100%)}
+}
+
+@keyframes slide-to-bottom-full {
+  0%    {transform: translateY(0)}
+  100%  {transform: translateY(100%)}
+}
+
+@keyframes slide-to-left-full {
+  0%    {transform: translateX(0)}
+  100%  {transform: translateX(-100%)}
+}
+
+
+//FADE
+
+@keyframes fade-in {
+  0%    {opacity: 0}
+  100%  {opacity: 1}
+}
+
+@keyframes fade-out {
+  0%    {opacity: 1}
+  100%  {opacity: 0}
+}
+
+
+//SCALE
+
+@keyframes scale-in {
+  0%    {transform: scale(0)}
+  100%  {transform: scale(1)}
+}
+
+@keyframes scale-out {
+  0%    {transform: scale(1)}
+  100%  {transform: scale(0)}
+}
+
+//CIRCLE MASK
+
+@keyframes circle-mask {
+  0%    {clip-path: circle(0 at center)}
+  100%  {clip-path: circle(100% at center)}
+}
+
+
+@keyframes fade-out-top-height {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-100px);
+    height: 0;
+    padding: 0;
+  }
+}
+
+
+/*======================================
+          BODY SELECTOR OPTIONS
+ =======================================*/
+
+$animation-options-list: (
+  animation-map-none: (
+    selector:             'animation-none',
+    speed-multiplier:     0
+  ),
+  animation-map-fast: (
+    selector:             'animation-fast',
+    speed-multiplier:     .5
+  ),
+  animation-map: (
+    selector:             'animation-normal',
+    speed-multiplier:     1
+  ),
+  animation-map-slow: (
+    selector:             'animation-slow',
+    speed-multiplier:     2
+  )
+);
+
+$animation-option: ();
+@function themeVar ($varName) {
+  @return map-get($animation-option, $varName);
+}
+
+@each $animation-label, $animation-option2 in $animation-options-list {
+  $animation-option: $animation-option2;
+
+  $speed-multiplier:          themeVar(speed-multiplier);
+  $animation-fast:            $animation-duration-default * $speed-multiplier * 0.5;
+  $animation-regular:         $animation-duration-default * $speed-multiplier;
+  $animation-slow:            $animation-duration-default * $speed-multiplier * 1.25;
+  $animation-stagger:         $animation-stagger-default * $speed-multiplier;
+
+  //Default value for animation mixin
+  $animation-duration:        $animation-regular;
+
+  #app-container.#{themeVar(selector)} {
+
+    //SPLASH-SCREEN
+
+    #splash-screen .md-button.visible {
+      display: block !important;
+      @include animation(scale-in);
+    }
+
+    .toast {
+      @include animation(slide-from-bottom-full, $animation-slow);
+
+      &.ng-leave {
+        @include animation(slide-to-bottom-full);
+      }
+    }
+
+    //LOBBY-LIST
+
+    #lobby-filters {
+      &.ng-enter {
+        @include animation(slide-from-top fade-in);
+      }
+
+      &.ng-leave {
+        @include animation(slide-to-top fade-out);
+      }
+    }
+
+    .lobby-row {
+      @include animation(slide-from-left fade-in, $stagger: $animation-stagger);
+
+      &.ng-leave {
+        @include animation(slide-to-right fade-out);
+      }
+    }
+
+    //LOBBY-PAGE
+
+    .header-image {
+      @include animation(fade-in, $animation-slow);
+    }
+
+    .lobbypage-text {
+      @include animation(slide-from-bottom fade-in, $animation-slow);
+    }
+
+    #slots {
+      @include animation(slide-from-top);
+    }
+
+    .slot-button {
+      @include animation(slide-from-right fade-in, $delay: .1s * $speed-multiplier);
+
+      &:nth-child(2) {
+        @include animation(slide-from-left fade-in, $delay: .1s * $speed-multiplier);
+      }
+    }
+
+    //LOBBY-CREATE
+
+    .search-filter {
+      @include animation(slide-from-top fade-in);
+
+      &.ng-leave {
+        @include animation(fade-out-top-height);
+      }
+    }
+
+    .lobbycreate-text span {
+      @include animation(slide-from-bottom fade-in);
+    }
+
+    md-grid-tile.tile-card {
+      @include animation(slide-from-top fade-in, $stagger: $animation-stagger);
+
+      &.ng-leave {
+        @include animation(scale-out fade-out);
+      }
+    }
+
+    .server-form {
+      @include animation(slide-from-top);
+    }
+
+    .server-form {
+      @include animation(slide-from-top);
+    }
+
+    .save-server-form {
+      @include animation(slide-from-top fade-in);
+
+      &.ng-leave {
+        @include animation(slide-to-top fade-out);
+      }
+    }
+
+    .server-verify-message {
+      @include animation(slide-from-top-full);
+
+      &.ng-enter {
+        @include animation(slide-from-top-full fade-in, $delay: $animation-regular);
+      }
+
+      &.ng-leave {
+        @include animation(slide-to-top-full fade-out);
+      }
+
+      // Needs absolute positioning, otherwise
+      // there will be a hole between sheets
+      &.ng-animate {
+        position: absolute;
+        right: 0;
+        left: 0;
+      }
+    }
+
+    //Profile and Settings
+
+    .profile-sheet {
+      @include animation(slide-from-top fade-in);
+    }
+
+    .settings-section,
+    .profile-lobbies-sheet {
+      @include animation(slide-from-top fade-in, $stagger: $animation-stagger);
+    }
+
+    .current-lobby {
+      @include animation(slide-from-top-full fade-in);
+
+      &.ng-leave {
+        @include animation(slide-to-top-full fade-out);
+      }
+    }
+
+  }
+}

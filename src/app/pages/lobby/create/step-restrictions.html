@@ -1,0 +1,62 @@
+<div class="restrictions-form">
+  <h2>Lobby restrictions</h2>
+
+  <p>
+    All fields are optional.
+    <md-button
+       class="md-raised md-primary"
+       ng-click="lobbyCreate.select(lobbyCreate.restrictions, true)">
+      Continue
+    </md-button>
+  </p>
+
+  <p>
+    Slot passwords, hours, and lobbies-played restrictions can be
+    changed on a per-slot basis once your lobby is created.
+  </p>
+
+  <md-input-container>
+    <input type="number"
+           ng-model="lobbyCreate.lobbySettings.requirements.general.hours"
+           min="0"
+           step="100"
+           placeholder="Minimum TF2 Hours">
+  </md-input-container>
+
+  <md-input-container>
+    <input type="number"
+           ng-model="lobbyCreate.lobbySettings.requirements.general.lobbies"
+           min="0"
+           step="10"
+           placeholder="Minimum Played Lobbies">
+  </md-input-container>
+
+  <md-input-container>
+    <input type="{{showPassword? 'text' : 'password'}}"
+           ng-model="lobbyCreate.lobbySettings.password"
+           placeholder="Slot Password">
+  </md-input-container>
+  <md-checkbox ng-model="showPassword">Show password</md-checkbox>
+
+  <md-input-container>
+    <input ng-model="lobbyCreate.lobbySettings.steamGroupWhitelist"
+           placeholder="Steam Group URL (Only members can join)">
+  </md-input-container>
+
+  <h2 ng-if="$root.userProfile.twitchName">Restrict to your Twitch Stream</h2>
+
+  <md-radio-group
+     ng-if="$root.userProfile.twitchName"
+     ng-model="lobbyCreate.twitchRestriction"
+     ng-change="lobbyCreate.updateTwitchRestriction()">
+    <md-radio-button value="subs">Subscribers-only</md-radio-button>
+    <md-radio-button value="follows">Followers-only</md-radio-button>
+    <md-radio-button ng-value="false">None</md-radio-button>
+  </md-radio-group>
+
+  <md-button
+     class="md-raised md-primary"
+     ng-click="lobbyCreate.select(lobbyCreate.restrictions, true)">
+    Continue
+  </md-button>
+</div>

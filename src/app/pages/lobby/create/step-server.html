@@ -1,0 +1,216 @@
+<div
+   md-ink-ripple
+   class="rent-server-back-button no-animate"
+   ng-click="lobbyCreate.verifiedServer=false;lobbyCreate.serverState=undefined"
+   ng-show="!!lobbyCreate.serverState">
+  <h2>Go Back</h2>
+</div>
+
+<div
+   md-ink-ripple
+   class="rent-server-form no-animate"
+   ng-click="lobbyCreate.serverState='stored'"
+   ng-show="!lobbyCreate.serverState">
+  <h2>Rent from TragicServers:</h2>
+  <md-progress-circular
+     ng-if="lobbyCreate.storedServers === null"
+     md-mode="indeterminate"></md-progress-circular>
+  <p ng-if="lobbyCreate.storedServers !== null"
+     ng-bind-template="{{lobbyCreate.storedServers.length}} available"></p>
+</div>
+<div class="tile-form no-animate serveme-ad"
+     ng-show="lobbyCreate.serverState === 'stored'">
+  <p>
+    Want a TF2 server of your own? Buy
+    from <a href="https://www.tragicservers.com/link.php?id=28"
+    target="_blank">TragicServers</a> and use coupon
+    code <b>BRAWL</b> for 35% off recurring for life!
+  </p>
+</div>
+<div class="tile-form no-animate"
+     ng-show="lobbyCreate.serverState === 'stored'">
+  <ul class="rent-servers-list"
+       ng-if="lobbyCreate.storedServers.length > 0">
+    <li ng-repeat="server in lobbyCreate.storedServers">
+      <a href="#"
+         ng-click="$event.preventDefault();lobbyCreate.rentStored(server.id)"
+         target="_blank"
+         ng-bind="server.name"></a>
+    </li>
+  </ul>
+  <p ng-if="lobbyCreate.storedServers.length === 0">
+    No servers currently available for rent.
+  </p>
+</div>
+
+<div
+   md-ink-ripple
+   class="rent-server-form no-animate"
+   ng-click="lobbyCreate.serverState='serveme'"
+   ng-show="!lobbyCreate.serverState">
+  <h2>Rent from serveme.tf:</h2>
+  <md-progress-circular
+     md-ink-ripple
+     ng-if="lobbyCreate.servemeServers === null"
+     md-mode="indeterminate"></md-progress-circular>
+  <p ng-if="lobbyCreate.servemeServers !== null"
+     ng-bind-template="{{lobbyCreate.servemeServers.servers.length}} available"></p>
+</div>
+<div class="tile-form no-animate serveme-ad"
+     ng-show="lobbyCreate.serverState === 'serveme'">
+  <p>
+    Donate to <a href="https://serveme.tf"
+    target="_blank">serveme.tf</a> to gain access to more of their
+    servers!
+  </p>
+</div>
+<div class="tile-form no-animate"
+     ng-show="lobbyCreate.serverState === 'serveme' && !lobbyCreate.verifiedServer">
+  <h2>Serveme.tf Servers:</h2>
+  <md-list class="md-dense" flex id="serveme-list">
+    <md-list-item
+      class="serveme-list-item"
+      aria-label="{{server.name}}"
+      ng-repeat-start="server in lobbyCreate.servemeServers.servers"
+      ng-click="lobbyCreate.rentServeme(lobbyCreate.servemeServers.startsAt, lobbyCreate.servemeServers.endsAt, server)">
+        <img class="emote serveme-list-icon"
+             ng-src="{{lobbyCreate.servemeRegionToFlag[server.flag]}}"
+             height="16"
+             width="16"
+             alt="{{server.flag}}"
+             title="{{server.flag}}"/>
+        <span ng-bind="server.name"></span>
+    </md-list-item>
+    <md-divider ng-repeat-end ng-if="$index % 2" style="clear:both"></md-divider>
+  </md-list>
+  <p ng-if="lobbyCreate.servemeServers.servers.length === 0">
+    No servers currently available for rent.
+  </p>
+</div>
+
+<div
+  class="tile-form rent-server-form no-animate serveme-selected-server"
+  ng-show="lobbyCreate.serverState === 'serveme' && lobbyCreate.verifiedServer">
+  <h2>
+    Selected Server:
+    <img class="emote serveme-selected-icon"
+       ng-src="{{lobbyCreate.servemeRegionToFlag[lobbyCreate.serveMeServer.flag]}}"
+       height="32"
+       width="32"
+       alt="{{lobbyCreate.serveMeServer.flag}}"
+       title="{{lobbyCreate.serveMeServer.flag}}"
+       />
+    <span ng-bind="lobbyCreate.serveMeServer.name"></span></h2>
+</div>
+
+<div
+   md-ink-ripple
+   class="rent-server-form no-animate"
+   ng-click="lobbyCreate.serverState='custom'"
+   ng-show="!lobbyCreate.serverState">
+  <h2>Use Your Own Server</h2>
+</div>
+
+<div class="tile-form no-animate serveme-ad"
+     ng-show="!lobbyCreate.serverState">
+  <p>
+    Want a TF2 server of your own? Buy
+    from <a href="https://www.tragicservers.com/link.php?id=28"
+    target="_blank">TragicServers</a> and use coupon
+    code <b>BRAWL</b> for 35% off recurring for life!
+  </p>
+</div>
+
+<!-- OWN SERVER START -->
+<div class="tile-form no-animate"
+     ng-show="lobbyCreate.serverState==='custom'">
+  <form name="serverCreateForm" class="server-form">
+    <h2>Server Information</h2>
+
+    <md-input-container
+       md-no-float
+       ng-if="lobbyCreate.showServers">
+      <md-select
+         placeholder="Saved Servers"
+         ng-model="selectedServer"
+         ng-change="lobbyCreate.loadSavedServer(selectedServer)">
+        <md-option
+           ng-repeat="(name, _) in lobbyCreate.savedServers"
+           ng-value="name"
+           ng-bind="name"></md-option>
+      </md-select>
+    </md-input-container>
+
+    <md-input-container md-no-float>
+      <input ng-model="lobbyCreate.lobbySettings.server"
+             ng-change="lobbyCreate.verifiedServer=false"
+             placeholder="Server address"
+             required>
+    </md-input-container>
+
+    <md-input-container md-no-float>
+      <input type="{{showPassword? 'text' : 'password'}}"
+             ng-model="lobbyCreate.lobbySettings.rconpwd"
+             ng-change="lobbyCreate.verifiedServer=false"
+             placeholder="Server RCON password"
+             required>
+    </md-input-container>
+
+    <md-checkbox ng-model="showPassword">Show password</md-checkbox>
+
+    <md-checkbox ng-model="saveServer">Save server address</md-checkbox>
+    <md-checkbox ng-show="saveServer" ng-model="savePassword">Save RCON password</md-checkbox>
+
+    <span class="save-server-form" ng-if="saveServer">
+      <md-input-container md-no-float>
+        <input type="text"
+               md-maxlength="50"
+               ng-model="lobbyCreate.serverName"
+               placeholder="Saved server name">
+      </md-input-container>
+
+      <md-button
+         ng-class="{'md-raised md-primary': true}"
+         ng-click="lobbyCreate.saveServer(lobbyCreate.serverName, lobbyCreate.lobbySettings.server, savePassword ? lobbyCreate.lobbySettings.rconpwd : '')"
+         ng-disabled="!lobbyCreate.lobbySettings.server || !lobbyCreate.serverName">
+        Save Server
+      </md-button>
+    </span>
+
+    <md-button
+       ng-class="{'md-raised md-primary' : !lobbyCreate.verifiedServer}"
+       ng-click="lobbyCreate.verifyServer(serverAdress, serverPassword)"
+       ng-disabled="serverCreateForm.$invalid">
+      Verify server
+    </md-button>
+  </form>
+</div>
+<!-- OWN SERVER END -->
+<!-- VERIFICATION START -->
+<div class="server-verify-message"
+     ng-if="lobbyCreate.verifyServerError">
+  <md-icon md-svg-icon="material:error-red"></md-icon>
+  <span ng-bind="lobbyCreate.verifyServerErrorMessage"></span>
+</div>
+
+<div class="server-verify-message" id="server-verify-box"
+     ng-if="lobbyCreate.verifiedServer">
+  <md-icon
+     ng-if="!lobbyCreate.requestSent"
+     md-svg-icon="material:check-blue"></md-icon>
+  <span ng-if="!lobbyCreate.requestSent">
+    The server is ready to be configured and used
+  </span>
+  <md-button class="md-raised md-primary"
+             ng-if="!lobbyCreate.requestSent"
+             ng-click="lobbyCreate.create()">
+    Create the lobby!
+  </md-button>
+  <span ng-if="lobbyCreate.requestSent">
+    Configuring server...
+  </span>
+  <md-progress-circular md-mode="indeterminate"
+                        ng-if="lobbyCreate.requestSent">
+  </md-progress-circular>
+</div>
+<!-- VERIFICATION END -->

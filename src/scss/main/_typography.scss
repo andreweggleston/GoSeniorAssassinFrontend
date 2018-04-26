@@ -1,0 +1,146 @@
+@import "../_variables.scss";
+
+/* ==================================
+                GLOBAL
+   ================================== */
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat:700);
+
+@font-face {
+    font-family: KelsonSansLight;
+    src: url(../assets/fonts/KelsonSansLight.otf);
+}
+
+@font-face {
+    font-family: FiraSansLight;
+    src: url(../assets/fonts/FiraSansLight.otf);
+}
+
+html, textarea, input, button, select {
+  font-family: $font-family-text;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-header;
+  font-weight: normal;
+}
+
+a {
+  color: inherit;
+}
+
+.lobby-image {
+  font-size: 13px;
+}
+
+.current-lobby > span {
+  font-family: $font-family-header;
+  font-size: 20px;
+}
+
+
+/* ==================================
+            COMMENT BOX
+   ================================== */
+
+.chat-player-name {
+  line-height: 1.6;
+  text-transform: none;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+#chat .chat-message {
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.chat-error {
+  font-size: 12px;
+}
+
+.chat-message-deleted {
+  font-style: italic;
+}
+
+/* ==================================
+            LOBBY LIST
+   ================================== */
+
+.lobby-list-empty-state {
+  font-size: 1.2rem;
+}
+
+.lobby-info-maxplayers {
+  font-size: .8em;
+}
+
+.lobby-info-row {
+  line-height: $lobby-info-height/2;
+
+  &.top {
+    font-size: 26px;
+    font-family: $font-family-header;
+    font-weight: bold;
+  }
+}
+
+
+/* ==================================
+            LOBBY PAGE
+   ================================== */
+
+.lobbypage-map {
+  font-family: $font-family-header;
+  font-weight: bold;
+  font-size: 60px;
+}
+
+.slot-button {
+  font-size: 12px;
+  text-transform: none;
+}
+
+.slot-playername {
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ==================================
+            CREATE PAGE
+   ================================== */
+
+.tile-text .title {
+  font-family: montserrat;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+
+/* ==================================
+            TOOLBAR
+   ================================== */
+
+.steam-login {
+  font-size: 0;
+}
+
+/* ==================================
+            TOAST
+   ================================== */
+
+.toast {
+  font-size: 14px;
+}
+
+/* ==================================
+           SETTINGS
+   ================================== */
+
+.no-saved-servers {
+  font-style: italic;
+}

@@ -1,0 +1,63 @@
+@import "../_variables.scss";
+
+//apply a size and an icon and you are good to go. Icons default to display: block because otherwise
+//they will not display on an inline element. If you need a standalone icon use an <i> tag.
+
+$classes: (scout soldier pocket roamer pyro demoman heavy engineer medic sniper spy flex);
+
+.lobby-icon {
+
+//---------------------
+//       Sizes
+//---------------------
+
+  &-large {
+    width: $icon-large-dimensions;
+    height: $icon-large-dimensions;
+    background-size: $icon-large-dimensions;
+    display: block;
+  }
+
+  &-small {
+    width: $icon-small-dimensions;
+    height: $icon-small-dimensions;
+    background-size: $icon-small-dimensions;
+    display: block;
+  }
+
+//---------------------
+//       Icons
+//---------------------
+
+  //class specific icons
+  //span::after is for rollovers
+  //search .class-buttons to see in action
+
+  //makes a class named .lobby-icon-classname for each of the nine classes
+  @each $class in $classes {
+    &-#{$class} {
+      background-image:url(../assets/img/icons/class/#{$class}.svg);
+
+      span:after {
+        background-image: url(../assets/img/icons/class/#{$class}-white.svg);
+      }
+    }
+  }
+}
+
+.filter-icon {
+  width: $icon-small-dimensions;
+  height: $icon-small-dimensions;
+  background-size: $icon-small-dimensions;
+  display: block;
+
+  @each $class in $classes {
+    &-#{$class} {
+      background-image:url(../assets/img/icons/class/#{$class}.svg);
+
+      span:after {
+        background-image: url(../assets/img/icons/class/#{$class}-white.svg);
+      }
+    }
+  }
+}

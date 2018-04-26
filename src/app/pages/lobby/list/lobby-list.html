@@ -1,0 +1,95 @@
+<md-button ng-click="lobbyList.f()">hi</md-button><a md-ink-ripple
+   ng-repeat="lobbyInformation in lobbyList.lobbies | LobbyListSettingsFilter as filteredLobbies track by lobbyInformation.id"
+   bindonce="lobbyInformation"
+   class="lobby-row"
+   ui-sref="lobby-page({lobbyID: lobbyInformation.id})">
+  <div bindonce="lobbyInformation"
+       class="lobby-image"
+       bo-style="{'background-image':'url(/assets/img/maps/lobby-row/' + lobbyInformation.map + '.jpg)'}">
+    <span class="lobby-type-twitch">
+      <img ng-if="lobbyInformation.twitchChannel"
+           src="/assets/img/logos/twitch-glitch-filled.png"
+           alt="twitch" />
+      <md-tooltip md-direction="top">Twitch: {{lobbyInformation.twitchChannel}}</md-tooltip>
+    </span>
+    <md-icon class="lobby-type-steam"
+             md-svg-icon="logo:steam"
+             ng-if="lobbyInformation.steamGroup">
+      <md-tooltip md-direction="bottom">Steam group: {{lobbyInformation.steamGroup}}</md-tooltip>
+    </md-icon>
+    <span bindonce="lobbyInformation"
+          class="lobby-type"
+          bo-bind="lobbyInformation.type"></span>
+    <span bindonce="lobbyInformation"
+          class="lobby-map"
+          bo-bind="lobbyInformation.map"></span>
+  </div>
+  <div flex class="lobby-main">
+    <div flex class="lobby-classes">
+      <div ng-repeat="class in lobbyInformation.classes track by $index"
+           bindonce
+           class="flex-max-margin">
+        <div class="class-button-column">
+          <div class="class-button no-animate lobby-icon-{{::class.class | stripSlotNameNumber}}"
+               ng-class="{'sheet' : !class.blu.filled || !class.red.filled}">
+            <md-button
+              ng-repeat="(team, slot) in {blu: class.blu, red: class.red} track by team"
+              ng-if="!slot.filled"
+              ng-class="['join-slot', slot.isRestricted?'restricted':team]"
+              ng-click="lobbyList.join(lobbyInformation.id, team, class.class, $event)"
+              aria-label="Join {{::team}} {{::class.class}}">
+              <md-tooltip md-direction="{{lobbyInformation.hasAnyPasswords? 'top':'bottom'}}">Join {{::team}} {{::class.class | stripSlotNameNumber}} slot</md-tooltip>
+              <span></span>
+            </md-button>
+          </div>
+          <div class="placeholder-slot-locked" ng-if="lobbyInformation.hasAnyPasswords">
+          </div>
+          <md-icon
+            class="blu-slot-locked"
+            ng-if="class.blu.password"
+            md-svg-icon="material:lock-closed">
+            <md-tooltip md-direction="bottom">Password required</md-tooltip>
+          </md-icon>
+          <md-icon
+            class="red-slot-locked"
+            ng-if="class.red.password"
+            md-svg-icon="material:lock-closed">
+            <md-tooltip md-direction="bottom">Password required</md-tooltip>
+          </md-icon>
+        </div>
+      </div>
+    </div>
+    <div class="lobby-info">
+      <div class="lobby-info-row top">
+        <span class="lobby-info-players"
+              ng-bind="lobbyInformation.players"></span>
+        <span class="lobby-info-maxplayers"
+              bo-bind="'/' + lobbyInformation.maxPlayers"></span>
+        <div flex></div>
+        <div class="lobby-mumble"
+             ng-if="!lobbyInformation.discord"
+             bo-class="{'not-required': !lobbyInformation.mumbleRequired}">
+          <md-tooltip md-direction="top">Mumble {{!lobbyInformation.mumbleRequired? 'not ':''}}mandatory</md-tooltip>
+        </div>
+        <div class="lobby-discord"
+             ng-if="lobbyInformation.discord">
+          <md-tooltip md-direction="top">Discord required</md-tooltip>
+        </div>
+      </div>
+      <div class="lobby-info-row">
+        <span>
+          <span bindonce="lobbyInformation"
+                bo-bind="lobbyInformation.region.code"></span>
+          <md-tooltip md-direction="bottom">Server located in {{::lobbyInformation.region.name}}</md-tooltip>
+        </span>
+        <span
+           bindonce="lobbyInformation"
+           class="lobby-league"
+           bo-style="lobbyInformation.league.length > 6 ? {'font-size': 'small'}:{}">
+          <span bo-bind="lobbyInformation.league"></span>
+          <md-tooltip md-direction="bottom">{{::lobbyInformation.league | uppercase}} rules and whitelist</md-tooltip>
+        </span>
+      </div>
+    </div>
+  </div>
+</a>

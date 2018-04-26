@@ -1,0 +1,442 @@
+@import "../../_variables.scss";
+@import "../../main/__helpers.scss";
+
+/*======================================
+                HEADER
+ =======================================*/
+
+.lobbycreate-text {
+  @include flex (row, space-between, flex-end);
+  flex-wrap: wrap;
+  z-index: 1;
+  padding: 0 $padding-medium $padding-medium;
+  height: 100%;
+
+  span {
+    float: left; //gets rid of whitespace
+  }
+
+  .left, .right {
+    @include flex (column, space-between, stretch);
+    width: 50%;
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  .row {
+    width: 100%;
+    @include flex (row, space-between, center);
+  }
+}
+
+
+/*======================================
+                SIDEBAR
+ =======================================*/
+
+.sidebar-link.already-filled span {
+  @include flex(row, space-between, center);
+  height: 100%;
+
+  &:after {
+    content: '';
+    display: inline-block;
+    margin-left: auto;
+    width: 20px;
+    height: 20px;
+    background: {
+      image: url(/assets/img/icons/material/check-blue.svg);
+      size: cover;
+    };
+  }
+}
+
+
+/*======================================
+              GENERAL STEPS
+ =======================================*/
+
+#wizard {
+  margin: $padding-medium 0;
+}
+
+.search-filter {
+  @extend .sheet;
+  width: 100%;
+  padding: $padding-small $padding-medium;
+  z-index: 1;
+
+  md-input-container {
+    display: block;
+    margin: 0;
+
+    input {
+      border-style: hidden;
+    }
+  }
+}
+
+md-grid-tile.tile-card {
+  @extend .sheet, .clickable;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color .2s ease-out,
+              box-shadow .2s ease-out,
+              //now for the repositioning animations
+              left .3s cubic-bezier(0.215, 0.61, 0.355, 1),
+              margin-top .3s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  &.selected figure::after {
+    content: '';
+    position: absolute;
+    right: $padding-small;
+    bottom: $padding-small;
+    width: 25px;
+    height: 25px;
+    background: {
+      image: url(/assets/img/icons/material/check-blue.svg);
+      size: cover;
+    }
+  }
+
+  &:hover {
+    .tile-text {
+      transform: translateY(0);
+    }
+
+    .tile-image:after {
+      transform: scale(1.5);
+    }
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  .tile-text {
+    padding: $padding-small $padding-medium;
+
+    & > * {
+      max-width: 350px;
+    }
+  }
+}
+
+.tile-card-mumble .tile-text {
+  padding: $padding-small $padding-medium;
+
+  img {
+    max-height: 50px;
+    margin: $padding-medium;
+  }
+}
+
+.tile-image {
+  @include flex(row, center, center);
+  @extend .fill-parent;
+  background: {
+    size: cover;
+    position: 50% 20%;
+    repeat: no-repeat;
+  }
+
+  &:before {
+    @extend .fill-parent;
+    content: "";
+    background-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, .6) 0%,
+        rgba(0, 0, 0, .2) 80px
+    );
+  }
+
+  &:after {
+    content:"";
+    width: 100%;
+    padding-bottom: 100%; //makes the height equal to the width
+    border-radius: 50%;
+    transition: all .2s ease-out;
+    transform-origin: 50% 50%;
+    transform: scale(.001);
+  }
+
+  & ~ .tile-text {
+    transform: translateY(calc(50% - 23px));
+    color: #fff;
+  }
+}
+
+.tile-text {
+  @include flex(column, center, center);
+  @extend .fill-parent;
+  text-align: center;
+  transition: all .2s ease-out;
+}
+
+
+/*======================================
+          RESTRICTIONS STEP
+ =======================================*/
+
+.slot-button .checkbox-lock {
+  @include flex(row, center, center);
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  .md-container {
+    display: none;
+  }
+
+  .md-label {
+    margin: 0;
+  }
+}
+
+
+/*======================================
+              SERVER STEP
+ =======================================*/
+
+.rent-server-form,
+.rent-server-back-button {
+  @include flex(row, center, center);
+  @extend .sheet;
+
+  cursor: pointer;
+
+  position: relative;
+  padding: $padding-medium $padding-big * 2;
+  z-index: 1;
+  margin-bottom: $padding-medium;
+
+  animation: none;
+
+  h2 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    margin-left: 0.5em;
+    font-size: 1.5em;
+  }
+}
+
+ul.rent-servers-list {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tile-form,
+.restrictions-form,
+.discord-form {
+  @include flex(column, center, center);
+  @extend .sheet;
+
+  position: relative;
+  padding: $padding-medium $padding-big * 2;
+  z-index: 1;
+
+  md-select {
+    text-align: center;
+  }
+
+  md-select > md-select-value > span > .md-text,
+  md-select > md-select-value.md-select-placeholder {
+    // md-select isn't really intended for use with centered text, so
+    // we have to counteract the 32px down-arrow
+    padding-left: 32px;
+  }
+
+  span.save-server-form {
+    @include flex(column, center, center);
+    width: 100%;
+
+    md-input-container {
+      margin-bottom: 0;
+    }
+
+  }
+
+  input {
+    text-align: center;
+  }
+
+  md-checkbox {
+    margin-top: 0;
+
+    // by default, all the but :last-of-type checkbox are given a //
+    // margin-right, but we're going for a vertical layout so we don't
+    // want that (since they'll be off center)
+    margin-right: 0;
+  }
+
+  md-input-container {
+    width: 100%;
+    margin-top: 0;
+
+    &.saved-servers {
+      text-align: center; // Centers the placeholder text
+    }
+  }
+
+}
+
+.discord-form {
+  // Don't ask; perfectly positioned to be under the mumble titles x.x
+  position: absolute;
+  top: 258px;
+  width: 100%;
+
+  img {
+    display: inline-block;
+    height: 1.5em;
+    vertical-align: middle;
+  }
+
+  md-icon {
+    height: 1em;
+    margin: 0;
+    svg {
+      fill: #666;
+    }
+  }
+}
+
+.restrictions-form {
+  p {
+    margin-bottom: $padding-medium;
+  }
+
+  h2 {
+    margin-bottom: 0;
+  }
+}
+
+.server-form {
+  @include flex(column, center, center);
+  width: 100%;
+}
+
+.server-verify-message {
+  @include flex(column, center, center);
+  @extend .sheet;
+  padding: $padding-medium;
+
+  md-icon {
+    height: 100px;
+    width: 100px;
+  }
+
+  span {
+    padding: $padding-small;
+  }
+}
+
+.serveme-ad {
+  margin-bottom: $padding-medium;
+
+  p {
+    margin: 0;
+  }
+}
+
+#serveme-list {
+  width: 100%;
+
+  .serveme-list-item {
+    width: 50%;
+    float: left;
+
+    .serveme-list-icon {
+      margin-left: 5px;
+    }
+  }
+}
+
+.serveme-selected-server {
+  cursor: default !important;
+}
+
+.serveme-selected-icon {
+  position: relative;
+  top: 7px;
+  margin-right:5px;
+}
+
+
+.configurations-form {
+  ul, h2 {
+    margin: 0;
+    padding: 0;
+  }
+
+  ul, li {
+    width: 100%;
+  }
+
+  li {
+    list-style: none;
+    margin-top: 10px;
+  }
+
+  .config-col {
+    display: flex;
+    flex-direction: row;
+  }
+
+  md-icon {
+    svg {
+      fill: #888;
+    }
+
+    &.mumble {
+      width: 20px;
+      height: 20px;
+      margin: 2px;
+    }
+  }
+
+  p > md-icon {
+    margin: 0;
+  }
+
+  .icon-stack {
+    display: flex;
+    flex-direction: column;
+    margin-right: 8px;
+  }
+
+  .lobby-main {
+    padding: 0 10px;
+  }
+
+  div.lobby-row {
+    animation: none;
+    height: 60px;
+    margin: 0;
+  }
+
+  .lobby-group-restrictions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .saved-configs {
+    margin-bottom: 1em;
+  }
+
+  .add-favorite-config {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    fill: $grey-medium;
+
+    &:hover {
+      fill: $hover-white;
+    }
+  }
+}

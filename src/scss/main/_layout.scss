@@ -1,0 +1,344 @@
+@import "../_variables.scss";
+@import "./__helpers.scss";
+
+* {
+  min-height: 0;
+  box-sizing: border-box;
+  outline: none !important;
+}
+
+body {
+  min-width: 320px;
+  width: 100%;
+  height: 100%;
+}
+
+#app-container {
+  @include flex (column, flex-start, center);
+  overflow-y: auto !important;
+  //angular adds overflow-y:scroll when activating md-select for some reason
+
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ==================================
+            SPLASH SCREEN
+   ================================== */
+
+#splash-screen {
+  &.ng-hide {
+    transition-delay: .4s;
+    transform: scale(1.2);
+    opacity: 0;
+  }
+
+  img {
+    width: 300px;
+    margin-bottom: $padding-medium;
+  }
+}
+
+/* ==================================
+                HEADER
+   ================================== */
+
+#header {
+  @include flex (column, center, center);
+  @extend .sheet, .flat;
+  width: 100%;
+  background: #000;
+  z-index: 50;
+  min-height: $navbar-height;
+}
+
+#header-toolbar {
+  @include flex (row, center, center);
+  @extend .sheet;
+  min-height: $navbar-height;
+
+  // Override the border-radius set by .sheet
+  border-radius: 0 !important;
+
+  .header-toolbar-content {
+    @include flex (row, center, center);
+    width: 100%;
+  }
+}
+
+#header-title {
+  @include flex (row, center, center);
+  height: $navbar-buttons-height;
+  margin: 0;
+
+  img {
+    padding: 3px;
+    height: 100%;
+  }
+}
+
+.toolbar-buttons {
+  @include flex (row, center, center);
+  height: $navbar-buttons-height;
+
+  .md-button {
+    @include flex (row, center, center);
+    height: 100%;
+    min-width: 0px; //for consistent spacing between buttons
+    padding: 0 5px;
+    margin: 0 2px;
+
+    img {
+      margin: 0 $padding-small;
+      border-radius: 3px;
+    }
+
+    &.discord-button {
+      padding: 0;
+
+      img {
+        margin: 0 5px;
+        height: 2.1em;
+      }
+    }
+
+    &.steam-button {
+      padding: 0;
+
+      md-icon {
+        margin: 0 5px;
+        height: 2.1em;
+      }
+    }
+
+    &.steam-login {
+      width: 154px;
+
+      //Don't show text, instead use steam's button
+      background: {
+        image: url(../assets/img/steam-login-small.png);
+        repeat: no-repeat;
+        position: center;
+      }
+    }
+  }
+}
+
+.header-bg-wrapper {
+  height: $header-image-height;
+  width: 100%;
+  position: relative;
+
+  overflow: hidden;
+
+  background: {
+    image: url(../assets/img/header-bg.jpg);
+    position: 50% 55%;
+    size: cover;
+  }
+
+  video.cinemagraph {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+
+    min-height: $header-image-height;
+    min-width: 100%;
+  }
+}
+
+.header-info {
+  @include flex (column, flex-end, center);
+  height: $header-image-height;
+  width: 100%;
+  position: relative;
+}
+
+.header-text,
+.header-text-no-darken {
+  width: 100%;
+  height: 100%;
+  padding: 0 $commentbox-width 0 $left-sidebar-width;
+}
+
+.header-text {
+  background-image: linear-gradient(
+                        to right,
+                        rgba(0, 0, 0, 0) 0%,
+                        rgba(0, 0, 0, .4) 10%,
+                        rgba(0, 0, 0, .4) 90%,
+                        rgba(0, 0, 0, 0) 100%
+                      );
+}
+
+#fab {
+  width: 100%;
+  margin-left: 0;
+  height: 0; //black magic
+  z-index: 75;
+
+  .md-button {
+    margin: 0 0 0 5px;
+    transform: translate(-0%, -50%);
+  }
+}
+
+#current-lobby-info {
+  width: $left-sidebar-width;
+  margin-right: $full-width - $left-sidebar-width;
+  height: 0; //black magic
+  z-index: 1;
+}
+
+.current-lobby {
+  @include flex(column, space-between, stretch);
+  @extend .sheet;
+  height: $current-lobby-height;
+  margin-top: $current-lobby-top;
+  padding-top: $padding-small;
+  text-align: center;
+}
+
+#toasts {
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow-y: hidden;
+}
+
+#commentbox {
+  width: $commentbox-width;
+  margin-left: $content-width;
+  height: 0; //black magic
+  z-index: 65;
+}
+
+.md-tab {
+  padding: $padding-small;
+}
+
+
+/*======================================
+             LEFT SIDEBAR
+=======================================*/
+
+#sidebar-links {
+  @include flex(column, flex-start, stretch);
+  width: $left-sidebar-width;
+  //Substract 5px to the margin-right to compensate for the
+  //padding-left 5px in #main-content due to shadow
+  margin: 0 $padding-medium - 5px 0 0;
+  padding: 0;
+
+  &.lobby-create-sidebar-links {
+    margin-top: 1em;
+  }
+}
+
+.sidebar-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 2px 0;
+}
+
+
+/* ==================================
+                CONTENT
+   ================================== */
+
+main {
+  @include flex (column, flex-start, center);
+  width: 100%;
+
+  // Never be shorter than the comment box, which has height: 500px but is
+  // also offset by margin-top: -100px
+  //
+  // also add ~30px for the sponsor message (this can be done better later,
+  // we need a quick fix now)
+
+  min-height: $commentbox-height + ($commentbox-top + $navbar-height - $header-height) + 30px;
+}
+
+#page-content {
+  @include flex (row, initial, initial);
+  width: 100%;
+}
+
+#left-sidebar {
+  min-width: initial;
+  padding-top: $padding-medium;
+  overflow-y: auto;
+}
+
+#main-content {
+  @include scrollbars;
+  width: 100%;
+  padding-top: 0;
+  //This divides the padding into padding + margin
+  //That way, when scrollbars appear, they are next to the content
+  padding-right: $padding-medium / 2 - 3px;
+  margin-right: $padding-medium / 2 + 3px;
+  //to show the shadows, needed because of the overflow:auto
+  padding-left: 5px;
+  overflow-x: hidden;
+}
+
+#chat {
+  width: $commentbox-width;
+  //next line makes the chat be at a consistent height,
+  //no matter what the header height is
+  margin-top: $commentbox-top + $navbar-height - $header-height;
+  min-height: $commentbox-height;
+  padding: $padding-medium;
+}
+
+
+/*======================================
+                OTHERS
+=======================================*/
+
+md-dialog-content {
+  padding: $padding-medium;
+}
+
+md-input-container {
+  // Temporary fix for https://github.com/angular/material/issues/6214
+  .md-errors-spacer {
+    min-height: 0 !important;
+  }
+}
+
+.inline-logo {
+  height: 1.5em;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.1em;
+
+  // md-icon's get a transparent color set by default... in order for
+  // fill: currentColor (which they have from angular-material) to
+  // correctly use the color of the surrounding text.
+  color: inherit;
+}
+
+.sponsor-tag {
+  float: right;
+  font-size: small;
+  margin-top: 0.2em;
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+// md-buttons by default make their labels all uppercase; that's fine,
+// except for buttons with a player's name
+.md-button.player-button {
+  span {
+    text-transform: none;
+  }
+}

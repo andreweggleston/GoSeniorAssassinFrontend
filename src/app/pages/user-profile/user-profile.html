@@ -1,0 +1,26 @@
+<div ng-if="userProfile.loadingError"
+     class="profile-loading-error">
+  <h1>Error loading profile</h1>
+  <p>{{userProfile.error}}</p>
+</div>
+
+<div class="profile-sheet user-profile"
+     ng-if="!userProfile.loadingError && userProfile.profile">
+  <h1 class="player-name">
+    <a>
+      {{::userProfile.profile.name}}
+    </a>
+  </h1>
+
+  <p class="player-details">
+    {{::userProfile.profile.kills}} Kills
+  </p>
+
+  <ul class="badges">
+    <li ng-repeat="tag in userProfile.profile.tags"
+        ng-if="tag !== 'player'">
+      <img class="badge" ng-src="/assets/img/badges/{{tag}}.svg"/>
+      <md-tooltip>{{::tag | capitalize}}</md-tooltip>
+    </li>
+  </ul>
+</div>

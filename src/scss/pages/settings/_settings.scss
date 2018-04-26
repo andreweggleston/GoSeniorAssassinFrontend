@@ -1,0 +1,51 @@
+@import "../../_variables.scss";
+@import "../../main/__helpers.scss";
+
+.settings-section {
+  @extend .sheet;
+  padding: $padding-medium $padding-big;
+  margin-bottom: $padding-medium;
+
+  h1, h2 {
+    margin-top: 0;
+    margin-bottom: $padding-small;
+  }
+
+  .md-table {
+    margin-bottom: $padding-medium;
+  }
+
+  .md-button {
+    margin: $padding-small 0;
+  }
+
+  .md-track-ticks {
+    display: none;
+  }
+
+  .md-input-container {
+    margin: 0;
+  }
+
+  ol {
+    margin-bottom: 1em;
+  }
+}
+
+.no-saved-servers {
+  display: block;
+  margin-bottom: $padding-medium;
+}
+
+.new-server-form {
+  @include flex (column, space-between, flex-start);
+
+  margin: 0;
+  width: 100%;
+
+  md-input-container {
+    margin-top: 0;
+    margin-bottom: 0;
+    min-width: 350px;
+  }
+}

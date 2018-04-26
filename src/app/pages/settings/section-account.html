@@ -1,0 +1,80 @@
+<div class="settings-section">
+  <h1>Account</h1>
+  <md-button
+     class="md-raised md-primary"
+     ng-href="{{::config.endpoints.api}}/logout">
+    Logout
+  </md-button>
+</div>
+<div class="settings-section">
+  <h1>Text updates</h1>
+  <p>Add your phone number to recieve text updates about your target and upcoming safety items.</p>
+
+
+
+  <p>We run a text bot that announces your new target, the new safety items, and the round end times. You can enable or disable it below.</p>
+
+  <form name="phoneNumberForm">
+    <md-input-container md-no-float>
+      <input name="phoneNumber"
+             ng-model="settings.phoneNumber"
+             md-maxlength="10"
+             maxlength="10"
+             placeholder="xxxxxxxxxx"
+             required>
+    </md-input-container>
+    <md-button
+      class="md-raised md-primary"
+      ng-disabled="phoneNumberForm.$invalid || (settings.originalSettings && settings.phoneNumber === settings.originalSettings.phoneNumber)"
+      ng-click="settings.saveSetting('phoneNumber', settings.phoneNumber)">
+      Save
+    </md-button>
+  </form>
+
+  <md-button
+    ng-if="$root.userProfile.phonenumber"
+    class="md-raised md-primary"
+    ng-click="settings.enableTextBot()">
+    Enable Text Bot
+  </md-button>
+  <br ng-if="$root.userProfile.phonenumber" />
+  <md-button
+    ng-if="$root.userProfile.phonenumber"
+    class="md-raised md-primary"
+    ng-click="settings.disableTextBot()">
+    Disable Text Bot
+  </md-button>
+</div>
+<div class="settings-section">
+  <h1>Theme</h1>
+  <md-radio-group ng-model="$root.currentTheme"
+                  ng-change="settings.saveSetting('currentTheme', $root.currentTheme)">
+    <md-radio-button ng-value="theme.selector"
+                     ng-repeat="theme in settings.sections.theme.theme track by theme.selector">
+      {{theme.name}}
+    </md-radio-button>
+  </md-radio-group>
+</div>
+<div class="settings-section">
+  <h1>UI Animations</h1>
+  <md-radio-group
+    ng-model="settings.animationLength"
+    ng-change="settings.saveSetting('animationLength', settings.animationLength)">
+    <md-radio-button
+      ng-repeat="(key, opt) in settings.sections.theme.animationOptions track by opt.selector"
+      ng-value="opt.selector">
+      {{opt.name}}
+    </md-radio-button>
+  </md-radio-group>
+
+  <h2>Animated Header</h2>
+  <md-radio-group
+    ng-model="settings.videoBackground"
+    ng-change="settings.saveSetting('videoBackground', settings.videoBackground)">
+    <md-radio-button
+      ng-repeat="(key, opt) in settings.sections.theme.videoBackground track by opt.value"
+      ng-value="opt.value">
+      {{opt.name}}
+    </md-radio-button>
+  </md-radio-group>
+</div>

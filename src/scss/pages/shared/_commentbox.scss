@@ -1,0 +1,113 @@
+@import "../../_variables.scss";
+@import "../../main/__helpers.scss";
+
+#chat {
+  @extend .sheet;
+
+  md-tab-content > div {
+    height: 100%;
+  }
+
+  md-content {
+    @include scrollbars;
+    height: 100%;
+    padding: 0 15px;
+  }
+
+  md-tabs-content-wrapper {
+    margin-top: $padding-medium;
+  }
+
+  form {
+    width: 100%;
+  }
+
+  md-input-container {
+    margin-bottom: 0;
+    width: 100%;
+
+    .md-char-counter {
+      // By default angular-material gives the character counter
+      // transition: all but we don't want that because it causes
+      // it to gradually change to/from the red error font color,
+      // which other error-reflecting parts of the UI don't
+      // transition for
+      transition: none;
+    }
+  }
+
+  ul {
+    padding: 0 $padding-small 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: 3px 0;
+  }
+
+  span.tab-title {
+    // Put an invisible asterisk on both sides, and they're always
+    // there in order to balance each other out. This way, the tab
+    // titles don't get pushed off center (since there is an asterisk
+    // on both sides) and also, when a tab gets marked/unmarked, it
+    // doesn't shift slightly.
+
+    // Downside: Wide tabs titles may scroll with less text than they normally would
+
+    &::before,
+    &::after {
+      content: "*";
+      color: transparent;
+    }
+
+    &.changed {
+      &::before {
+        color: inherit;
+      }
+    }
+  }
+}
+
+.chat-error {
+  float: left;
+  padding-top: 5px;
+  line-height: 14px;
+  overflow: hidden;
+  transition: all .2s ease-out;
+
+  p {
+    transition: all .2s ease-out;
+    margin: 0;
+  }
+
+  &.ng-hide p {
+    transform: translateY(-19px);
+  }
+}
+
+.chat-message-time {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: top;
+  margin: 0 18px 0 -15px;
+}
+
+.chat-message-text {
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: top;
+  word-wrap: break-word;
+
+  img.emote {
+    vertical-align: text-bottom;
+  }
+}
+
+.chat-player-name {
+  min-width: 0;
+  min-height: $commentbox-lineheight;
+  margin: 0 3px 0 -15px;
+  padding: 0;
+}

@@ -1,0 +1,89 @@
+<!-- The next div is needed to fix a bug regarding flexbox, min-height and IE -->
+<div layout="column">
+  <div id="chat"
+       layout="column"
+       ng-controller="CommentBoxController as commentBox">
+    <md-tabs flex
+             class="chat-tabs"
+             md-selected="currentTab"
+             md-autoselect="true"
+             md-stretch-tabs="always">
+      <md-tab ng-repeat="room in commentBox.rooms | unique:'id' | greaterThan:'id':-1 track by room.id">
+        <md-tab-label>
+          <span
+             ng-class="{'tab-title': true,
+                       'changed': commentBox.showRoomNotification[room.id]}"
+             ng-bind="room.id === 0? 'CHAT' : ((room.joined? 'YOUR':'THIS') + ' Lobby #' + room.id)"></span>
+        </md-tab-label>
+        <md-tab-body>
+          <md-content scroll-glue>
+            <div ng-repeat="message in room.messages track by message.id"
+                 class="chat-message">
+              <span class="chat-message-time"
+                    ng-if="$root.currentTimestampsOption !== 'none'"
+                    ng-bind="message.timestamp | date:($root.currentTimestampsOption === 'hours12'? 'shortTime' : 'H:mm')"
+                    title="{{message.timestamp | date:'medium'}}"></span>
+              <md-menu>
+                <md-button
+                   ng-attr-title="{{$root.currentTimestampsOption === 'none' ? (message.timestamp | date:'medium') : ''}}"
+                   class="chat-player-name"
+                   ng-class="[message.player.tags]"
+                   ng-click="$mdOpenMenu($event)"
+                   tabindex="-1"
+                   md-menu-origin
+                   bindonce="message"
+                   aria-label="{{::message.player.name}}"
+                   bo-bind="message.player.name + ':'"></md-button>
+                <md-menu-content width="3">
+                  <md-menu-item
+                    ng-if="message.player.tags[0] !== 'seniorassassin'"
+                    ui-sref="user-profile({userID: message.player.studentid})">
+                    <md-button>
+                      Stadium profile
+                    </md-button>
+                  </md-menu-item>
+		              <md-menu-item
+                     ng-if="($root.userProfile.role=='moderator' || $root.userProfile.role=='administrator') && !message.deleted">
+		                <md-button
+		                   ng-click="commentBox.deleteMessage(message)">
+		                  Delete Message
+		                </md-button>
+		              </md-menu-item>
+                </md-menu-content>
+              </md-menu>
+              <span ng-class="{'chat-message-text':true,
+                               'chat-message-deleted':message.deleted}"
+                    ng-bind-html="message.message"></span>
+            </div>
+          </md-content>
+        </md-tab-body>
+      </md-tab>
+    </md-tabs>
+
+    <form name="chatForm" ng-if="$root.userProfile.studentid">
+      <!-- Yes, this md-is-error is almost the default invalid
+           behavior, but a) we don't want an error if the field is empty,
+           and b) without explicitly specifying it, the md-input-container
+           won't be marked invalid until it has been touched (focused and
+           blurred) at least once. See:
+           https://github.com/angular/material/issues/1330 -->
+      <md-input-container
+         md-is-error="chatForm.chatMessage.$error['md-maxlength']">
+        <label for="chatMessage">Type your message</label>
+        <textarea name="chatMessage"
+                  ng-keydown="commentBox.sendMessage($event)"
+                  ng-model="commentBox.messageBox"
+                  md-maxlength="150"
+                  maxlength="300"
+                  required></textarea>
+        <div class="chat-error"
+             ng-show="chatForm.chatMessage.$error['md-maxlength']">
+          <p>Message too long</p>
+        </div>
+      </md-input-container>
+    </form>
+  </div>
+</div>
+<span class="sponsor-tag">Powered
+by <a href="https://www.tragicservers.com/link.php?id=28"
+target="_blank">TragicServers</a></span>

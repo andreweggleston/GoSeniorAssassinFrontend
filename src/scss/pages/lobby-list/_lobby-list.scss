@@ -1,0 +1,344 @@
+@import "../../_variables.scss";
+@import "../../main/__helpers.scss";
+
+/*======================================
+                HEADER
+ =======================================*/
+
+.lobbylist-text {
+  height: 100%;
+  position: relative;
+}
+
+/* The filters enabled/disabled switch */
+#filters-checkbox {
+  position: absolute;
+  bottom: $padding-small;
+  right: $padding-medium;
+  margin: 0;
+  text-shadow: #000 0 0 12px;
+}
+
+
+/*======================================
+              EMPTY-STATE
+ =======================================*/
+
+.lobby-list-empty-state {
+  width: 100%;
+  text-align: center;
+}
+
+
+/*======================================
+              LOBBY-FILTERS
+ =======================================*/
+
+#lobby-filters {
+  @extend .sheet;
+  padding: $padding-small $padding-medium;
+  margin: $padding-medium 0;
+
+  md-tab-content > div {
+    @include flex(row, center, center);
+
+    md-checkbox {
+      margin: $padding-small;
+
+      // Force the height to match the line-height, so that using
+      // larger icons for the class filters doesn't make the
+      // #lobby-filters div shrink/expand when moving through
+      // tabs
+      height: 1.5em;
+
+      i.filter-icon {
+        // quick hack to roughly center the icons
+        position: relative;
+        top: -2px;
+      }
+
+      .md-label {
+        // angular-material sets vertical-align: middle which
+        // does very little except make the full md-checkbox
+        // 1px taller
+        vertical-align: baseline;
+      }
+    }
+  }
+}
+
+.hours-notif {
+  @extend .sheet;
+  width: 100%;
+  text-align: center;
+  margin: 0 0 $padding-small;
+  padding: $padding-small;
+  position: relative;
+}
+
+/* ==================================
+            SUBSTITUTES
+   ================================== */
+
+.substitute {
+  @include flex (row, center, center);
+  @extend .sheet, .clickable;
+  width: 100%;
+  text-align: center;
+  height: 40px;
+  margin: 0 0 $padding-small;
+  padding: $padding-small*.75 0;
+  position: relative;
+
+  .icon {
+    height: 100%;
+    width: 50px;
+    background: {
+      repeat: no-repeat;
+      position: center;
+      size: contain;
+    }
+  }
+}
+
+/*======================================
+              LOBBY-ROW
+ =======================================*/
+
+.lobby-row {
+  @include flex (row, space-between, stretch);
+  @extend .sheet, .clickable;
+  height: $lobby-card-height;
+  margin:  0 0 $padding-small 0;
+  overflow: hidden;
+  position: relative; //so the ripple doesn't fill the whole page
+  text-decoration: none;
+
+  transition: background-color 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &:first-child {
+    margin-top: $padding-medium;
+  }
+}
+
+.lobby-image {
+  @include flex (column, center, flex-end);
+  width: $left-sidebar-width;
+  position: relative;
+  background: {
+    color: #000;
+    size: cover;
+  }
+
+  &:before {
+    @extend .fill-parent;
+    content: "";
+    background-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, .4) 0%,
+        rgba(0, 0, 0, .5) 40%,
+        rgba(0, 0, 0, .5) 60%,
+        rgba(0, 0, 0, .4) 100%
+    );
+  }
+
+  span {
+    padding-right: $padding-medium;
+    z-index: 1; //on top of the image
+  }
+
+  .lobby-type-twitch,
+  .lobby-type-steam {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &, img {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  .lobby-type-steam {
+    top: auto;
+    bottom: 0;
+
+    svg {
+      @extend .fill-parent;
+      fill: white;
+    }
+  }
+}
+
+.lobby-main {
+  @include flex (row, space-between, center);
+  padding: 0 $padding-medium;
+}
+
+.lobby-classes {
+  @include flex (row, center, center);
+
+  .placeholder-slot-locked {
+    float: left;
+    display: block;
+    height: 29px;
+  }
+
+  .red-slot-locked,
+  .blu-slot-locked {
+    height: 24px;
+    width: 24px;
+    padding-top: 5px;
+  }
+
+  .red-slot-locked {
+    float: right;
+
+    svg {
+      color: $tf2-red;
+    }
+  }
+
+  .blu-slot-locked {
+    float: left;
+
+    svg {
+      color: $tf2-blue;
+    }
+  }
+}
+
+.flex-max-margin {
+  flex: 1;
+  max-width: $class-button-width * 2;
+
+  & > div {
+    margin: 0 auto;
+  }
+}
+
+.lobby-info {
+  @include flex (column, space-around, stretch);
+  width: $lobby-info-width;
+  height: $lobby-info-height;
+  margin-left: $padding-small;
+  text-transform: uppercase;
+}
+
+.lobby-mumble {
+  height: 100%;
+  color: #fff;
+  min-width: 30px;
+  background: {
+    image: url(/assets/img/mumble.svg);
+    size: 25px;
+    repeat: no-repeat;
+    position: center;
+  }
+
+  &.not-required {
+    background-image: url(/assets/img/not-mumble.svg);
+    opacity: .4;
+  }
+}
+
+.lobby-discord {
+  height: 100%;
+  color: #fff;
+  min-width: 30px;
+  background: {
+    image: url(/assets/img/logos/discord-logo-blurple.svg);
+    size: 25px;
+    repeat: no-repeat;
+    position: center;
+  }
+}
+
+.lobby-region {
+  min-width: 30px;
+}
+
+.lobby-info-row {
+  @include flex (row, space-between, center);
+  height: 50%;
+  text-align: center;
+}
+
+
+
+/* ==================================
+      CLASS AND JOIN CLASS BUTTONS
+   ================================== */
+
+.class-button-column {
+  width: 50px;
+}
+
+.class-button {
+  @include flex(row, space-between, stretch);
+  width: $class-button-width;
+  min-width: $class-button-width; //override md-button
+  min-height: $class-button-height;
+  background:{
+    size: $class-button-background-width;
+    position: center;
+    repeat: no-repeat;
+  }
+  overflow: hidden;
+  border-radius: 3px;
+  padding: 0;
+  margin: 0px;
+}
+
+.join-slot {
+  min-width: $class-button-width/2;
+  min-height: $class-button-height;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+
+  span {
+    @extend .fill-width;
+    height: 10%;
+    overflow: hidden;
+    transition: height 0.1s ease-out;
+
+    &:before, &:after {
+      @extend .fill-parent;
+      content: "";
+      background:{
+        size: $class-button-background-width;
+        position: ($class-button-width - $class-button-background-width) / 2
+                  ($class-button-height - $class-button-background-height) / 2;
+        repeat: no-repeat;
+      }
+    }
+  }
+
+  &:only-child {
+    min-width: 50px; //only way for it to work in IE
+  }
+
+  &:nth-child(2) {
+    span::after{
+      background-position: - $class-button-background-width / 2
+              ($class-button-height - $class-button-background-height) / 2;
+    }
+  }
+
+  &:hover > span {
+    height: $class-button-height;
+  }
+
+  &.blu > span:before {
+    background-color: $tf2-blue;
+  }
+
+  &.red > span:before {
+    background-color: $tf2-red;
+  }
+
+  &.restricted > span:before {
+    background-color: gray;
+  }
+}

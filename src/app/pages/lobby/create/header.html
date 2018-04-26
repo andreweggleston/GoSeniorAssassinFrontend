@@ -1,0 +1,37 @@
+<div class="header-image"
+     ng-style="header.lobbyInformation && header.lobbyInformation.map && {'background-image':'url(assets/img/maps/header/' + header.lobbyInformation.map + '.jpg)'}">
+  <div class="header-text">
+    <div class="lobbycreate-text">
+      <div class="row">
+        <span ng-show="header.lobbyInformation.map"
+          class="lobbypage-map">
+          {{header.lobbyInformation.map}}
+        </span>
+      </div>
+      <div class="left">
+        <span class="lobbypage-rules">
+          <span ng-show="header.lobbyInformation.type">
+            {{header.lobbyInformation.type | capitalize}}
+          </span>
+          <span ng-show="header.lobbyInformation.whitelistID">
+            ,&nbsp;whitelist&nbsp;<whitelist id="header.lobbyInformation.whitelistID" />
+          </span>
+          <span ng-show="header.lobbyInformation.league">
+            , {{header.lobbyInformation.league | uppercase}} rules
+          </span>
+        </span>
+        <span class="lobbypage-leader">Leader: {{$root.userProfile.name}}</span>
+      </div>
+      <div class="right">
+        <span class="lobbypage-mumble"
+          ng-show="(header.lobbyInformation.mumbleRequired !== undefined && !header.lobbyInformation.discord)">
+          Mumble {{header.lobbyInformation.mumbleRequired ? '': 'not '}}required
+        </span>
+        <span class="lobbypage-mumble"
+          ng-show="(header.lobbyInformation.mumbleRequired !== undefined && header.lobbyInformation.discord)">
+          Discord required
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

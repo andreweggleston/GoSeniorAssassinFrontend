@@ -1,0 +1,31 @@
+<div class="settings-section">
+  <h1>Announcement</h1>
+  <a>{{mainPage.profile.Announcement}}</a>
+</div>
+<div ng-if="!mainPage.profile.killed">
+  <div class="settings-section">
+    <h1>Safety Object</h1>
+    <a>{{mainPage.profile.SafetyItem}}</a>
+  </div>
+  <div class="settings-section" id="target-section">
+    <h1>Target</h1>
+    <a>{{mainPage.profile.target}}</a>
+    <md-button ng-if="!mainPage.targetMarked" ng-click="mainPage.markTarget()">I shot my target</md-button>
+    <div ng-if="mainPage.marked && mainPage.showMarkSelection">
+      <a>You've been marked for death. Have you been assassinated?</a>
+      <br>
+      <md-button ng-click="mainPage.confirmMark()">Yes</md-button>
+      <md-button ng-click="mainPage.denyMark()">No</md-button>
+    </div>
+  </div>
+  <div class="settings-section">
+    <h1>Time until round end:</h1>
+    <a>{{mainPage.profile.KillByDate}}</a>
+  </div>
+  <md-button ng-click="mainPage.update()">Force Update</md-button>
+</div>
+<div ng-if="mainPage.profile.killed">
+  <div class="settings-section">
+    <h1>You've been assassinated!</h1>
+  </div>
+</div>

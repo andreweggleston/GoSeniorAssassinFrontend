@@ -1,0 +1,11 @@
+<div id="sidebar-links">
+  <h1 class="steps-title">
+    Sections
+  </h1>
+  <md-button class="sidebar-link"
+    ng-class="{'active' : $root.currentState==settingSection}"
+    ng-repeat="(settingSection, _) in settings.sections"
+    ui-sref="{{::settingSection}}">
+    {{::settingSection}}
+  </md-button>
+</div>

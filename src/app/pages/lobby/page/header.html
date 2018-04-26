@@ -1,0 +1,57 @@
+<div class="header-image"
+     ng-style="{'background-image':(header.lobbyInformation.map && ('url(assets/img/maps/header/' + header.lobbyInformation.map + '.jpg)'))}"
+     ng-show="header.shouldShowLobbyInformation()">
+  <div class="header-text">
+    <div class="lobbypage-text">
+      <div class="row">
+        <span class="lobbypage-map"
+              title="{{header.lobbyInformation.map}}"
+              ><md-icon class="big"
+                        md-svg-icon="material:lock-closed-white"
+                        ng-if="header.lobbyInformation.whitelisted || header.lobbyInformation.password">
+            <md-tooltip>Private lobby</md-tooltip>
+          </md-icon>{{header.lobbyInformation.map}}</span>
+        <div class="lobbypage-lobby-closed"
+             ng-if="header.lobbyInformation.state>=5">
+          FINISHED
+        </div>
+        <div class="lobbypage-lobby-controls"
+             ng-if="header.shouldShowLobbyControls()">
+          <md-button class="md-raised" ng-click="header.closeLobby()">
+            Close lobby
+          </md-button>
+          <md-button class="md-raised" ng-click="header.resetServer()">
+            Reset server
+          </md-button>
+        </div>
+      </div>
+      <div class="left">
+        <span class="lobbypage-rules">
+          <span ng-bind="header.lobbyInformation.type"></span>
+          <span>
+            ,&nbsp;whitelist&nbsp;<whitelist id="header.lobbyInformation.whitelistId" />
+          </span>
+          <span ng-bind-template=", {{header.lobbyInformation.league | uppercase}} rules"></span>
+        </span>
+        <span>
+        Leader:
+        <a class="lobbypage-leader"
+              ui-sref="user-profile({userID: header.lobbyInformation.leader.studentid})"
+           ng-bind="header.lobbyInformation.leader.name"></a>
+        </span>
+      </div>
+      <div class="right">
+        <span class="lobbypage-mumble"
+              ng-if="!header.lobbyInformation.discord"
+              ng-bind-template="Mumble {{header.lobbyInformation.mumbleRequired ? '': 'not '}}required"></span>
+        <span class="lobbypage-mumble"
+              ng-if="header.lobbyInformation.discord">Discord required</span>
+        <span class="lobbypage-region" ng-bind="header.lobbyInformation.region.name"></span>
+        <span ng-if="header.lobbyInformation.whitelisted || header.lobbyInformation.password">Private lobby</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div ng-if="header.shouldShowError()"></div>
+<md-progress-linear md-mode="indeterminate"
+                    ng-if="header.shouldShowProgress()"></md-progress-linear>
